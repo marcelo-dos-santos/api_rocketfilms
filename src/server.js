@@ -1,7 +1,8 @@
 require("express-async-errors");
-const express = require('express')
-const AppError = require("./utils/AppError")
-const database = require("./database/sqlite")
+const express = require('express');
+const AppError = require("./utils/AppError");
+const database = require("./database/sqlite");
+const uploadConfig = require("./configs/upload");
 
 database()
 
@@ -28,6 +29,8 @@ app.use((error, request, response, next) => {
         message: "Internal server error"
     });
 });
+
+app.use("/files", express.static(uploadConfig.UPLOADS_FOLDER));
 
 
 const PORT = 3333

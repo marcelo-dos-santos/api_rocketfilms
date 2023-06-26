@@ -2,7 +2,7 @@ const knex = require("knex");
 const AppError = require("../utils/AppError");
 const DiskStorage = require("../providers/DiskStorage");
 
-class UserAvatarController {
+class UsersAvatarController {
     async update(request, response) {
         const user_id = request.user.id;
         const avatarFilename = request.file.filename;
@@ -24,4 +24,4 @@ class UserAvatarController {
     };
 };
 
-module.exports = UserAvatarController;
+module.exports = UsersAvatarController;
