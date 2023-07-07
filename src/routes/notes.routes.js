@@ -12,6 +12,7 @@ notesRoutes.use(ensureAuthenticated)
 
 notesRoutes.get("/", notesController.index);
 notesRoutes.post("/", notesController.create);
+notesRoutes.patch("/:id", notesController.update);
 notesRoutes.get("/:id", notesController.show);
 notesRoutes.delete("/:id", notesController.delete);
 

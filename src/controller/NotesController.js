@@ -75,7 +75,8 @@ class NotesController {
     }
 
     async index(request, response) {
-        const { title, user_id, tags } = request.query;
+        const { title, tags } = request.query;
+        const user_id = request.user.id;
 
         let notes;
 
@@ -112,6 +113,53 @@ class NotesController {
 
         return response.json(notesWithTags);
     }
+
+    async update(request, response) {
+        const { title, description, rating, tags } = request.body;
+        const { id } = request.params;
+      
+        if (rating > 5) {
+          throw new AppError("Rating superior a 5! Tem que ser de 0 a 5");
+        }
+      
+        if (rating < 0) {
+          throw new AppError("Rating inferior a 0! tem que ser de 0 a 5");
+        }
+      
+        await knex("movie_notes")
+          .where({ id }) // Update the note with the specified ID
+          .update({ title, description, rating });
+      
+        if (Array.isArray(tags)) {
+          if (tags.length > 0) {
+            // Delete existing tags only if new tags are provided
+            await knex("tags").where({ note_id: id }).del();
+            
+            // Insert new tags
+            const newTags = tags.map((name) => {
+              return {
+                note_id: id,
+                name,
+              };
+            });
+        
+            await knex("tags").insert(newTags);
+          }
+        }
+      
+        const responseData = {
+          message: "A nota foi alterada com sucesso!",
+          note: {
+            title,
+            description,
+            note_id: id,
+            rating,
+            tags,
+          },
+        };
+      
+        response.json(responseData);
+      }
 }
 
 
