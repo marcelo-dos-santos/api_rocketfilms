@@ -14,6 +14,10 @@ class NotesController {
             throw new AppError("Rating inferior a 0! tem que ser de 0 a 5")
         }
 
+        if (isNaN(rating)) {
+            throw new AppError("Rating tem que ser um número")
+        }
+
         const [note_id] = await knex("movie_notes").insert({
             title,
             description,
@@ -125,10 +129,19 @@ class NotesController {
         if (rating < 0) {
           throw new AppError("Rating inferior a 0! tem que ser de 0 a 5");
         }
+
+        if (isNaN(rating)) {
+            throw new AppError("Rating tem que ser um número")
+        }
       
         await knex("movie_notes")
           .where({ id }) // Update the note with the specified ID
-          .update({ title, description, rating });
+          .update({ 
+            title, 
+            description, 
+            rating, 
+            updated_at: knex.fn.now() 
+        });
       
         if (Array.isArray(tags)) {
           if (tags.length > 0) {
@@ -159,7 +172,7 @@ class NotesController {
         };
       
         response.json(responseData);
-      }
+    }
 }
 
 
